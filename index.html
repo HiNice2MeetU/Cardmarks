@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cardmark</title>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-5"> 
+<link rel="stylesheet" href="./index.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body id="body" class="dark">
+
+<!-- Menu Bar -->
+<ul class="nav">
+  <li class="nav"><div class="active nav_element"><i class="fa fa-home"></i> Home</div></li>
+  <li class="nav"><button onclick="ModalDialogue(true,1)" type="button" class="flat nav_element"><i class="fa fa-user"></i> About</button></li>
+  <li style="float:right" class="nav"><button onclick="ModalDialogue(true,0)" type="button" class="flat nav_element"><i class="fa fa-plus"></i></button></li>
+
+  <li style="float:right" class="nav"><button onclick="ToggleTheme()" type="button" class="flat nav_element"><i class="fa fa-adjust"></i></button></li>
+</ul>
+
+<!-- Add card modal box -->
+<div id="add_card" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span onclick="ModalDialogue(false,0)" class="close">&times;</span>
+    <h3> Add a card... </h3>
+    <p> Enter a valid url to <strong>any</strong> website! </p>
+    <!-- The form to add new cards -->
+	<form name="add_card_form" onsubmit="return ValidateAddForm()" method="post">
+	URL: <input type="url" name="url" required>
+	Name: <input type="text" name="name" required>
+	<input type="submit" value="Add">
+	</form>
+	<br>
+	<div class="warning">
+	  <p><h3>Warning:</h3> In order for the website <strong>preview</strong> to work, the <strong>website</strong> must set <strong>X-Frame-Options</strong> to <strong>SAMEORIGIN</strong>. The card will still work, but the website preview will not show :( </p>
+	</div>
+  </div>
+
+</div>
+
+<!-- Add about modal box -->
+<div id="about_modal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span onclick="ModalDialogue(false,1)" class="close">&times;</span>
+    <h3> Cardmarks v0.1 </h3>
+    <p> Made by <strong>HiWorld</strong></p>
+    <p> Github: </p>
+    <p> Itch: <a href="https://hinice2meetu.itch.io/cardmark">https://hinice2meetu.itch.io/cardmark</a></p>
+    <p> Made for the <strong>The Tool Jame</strong> on Itch.io! </p>
+  </div>
+
+</div>
+
+<!-- Script to handle the adding of cards -->
+<script type="text/javascript">
+	// Globals
+	const Storage = window.localStorage;
+	let AddCardPoint = null;
+	let Body = null;
+	let DarkMode = true;
+	const IdList = new Object();
+	const Modals = {
+		0: document.getElementById("add_card"),
+		1: document.getElementById("about_modal")
+	}
+
+	// Load things on page load
+	window.onload = function() {
+		AddCardPoint = document.getElementById("grid");
+		Body = document.getElementById("body");
+		console.log("loading...",IdList)
+		Object.freeze(Modals);
+		if (!CheckData()) {
+			alert("Your browser doesn't support localStorage, your cards will not be saved");
+			ToggleTheme(true);
+		}
+		
+		LoadData();
+	};
+
+	window.onbeforeunload = function(){
+   		//SaveData();
+   		console.log("Saving")
+	}
+	
+	// Toggle the theming
+	function ToggleTheme(theme = null) {
+		console.log(DarkMode);
+		if (theme != null) {
+			if (theme) {
+				Body.classList.replace('light','dark');
+			} else {
+				Body.classList.replace('dark','light');
+			}
+			DarkMode = !theme;
+		} else {
+			if (DarkMode) {
+				Body.classList.replace('light','dark');
+			} else {
+				Body.classList.replace('dark','light');
+			}
+
+			DarkMode = !DarkMode;
+		}
+		SaveData();
+	}
+
+	// Modals
+	function ModalDialogue(open,key) {
+		const AddCardModal = Modals[key]
+
+		console.log("UwU Open")
+		if (open) {
+			AddCardModal.style.display = "block";
+		} else {
+			AddCardModal.style.display = "none";
+		}
+	}
+
+	window.onclick = function(event) {
+		for (let key in Modals) {
+  			const Current = Modals[key];
+  			if (event.target == Current) {
+				ModalDialogue(false,key);
+  			}
+		}
+	}
+
+	// Handle form inputs from the add card form
+	function ValidateAddForm() {
+		var name = document.forms["add_card_form"]["name"].value;
+		var url = document.forms["add_card_form"]["url"].value;
+
+		AddCard(url,name);
+		ModalDialogue(false, 0);
+
+		return false;
+	}
+
+	// Add a card
+	function AddCard(url,name) {
+		console.log(url,name)
+
+		// Create id
+		const id = Math.random() * 10;
+
+		// Add a card structure to the html
+		let CardRoot = document.createElement('div');
+		CardRoot.setAttribute('class', 'card');
+		CardRoot.innerHTML = `
+			<button class="remove" onclick="RemoveCard(`+ id +`)"><i class="fa fa-trash"></i></button>
+			<div class="preview">
+			<iframe class="responsive-iframe" src="`+ url +`"        
+			loading="lazy" frameBorder="0" title="A iframe preview of `+ url +`"></iframe>
+			</div>
+			
+			<div class="hiddenlink" onclick=OpenLink("`+ url +`")>
+				<div class="container">
+					<h4><b>`+ name +`</b></h4>
+					<p class="linkrl">`+ url +`</p>
+				</div>
+			</div>
+		`;
+		AddCardPoint.appendChild(CardRoot);
+
+		// Add the reference to the html for deletion
+		let AddObj = new Object();
+		AddObj["reference"] = CardRoot;
+
+		// Add the name + url to save it to local storage
+		let DetObj = new Object();
+		DetObj["url"] = url;
+		DetObj["name"] = name;
+		AddObj["details"] = DetObj;
+
+		IdList[id] = AddObj;
+		SaveData();
+		//console.log(JSON.stringify(IdList));
+		//console.log(IdList);
+	}
+
+	// Remove card
+	function RemoveCard(id) {
+		let element = IdList[id]["reference"];
+		element.remove(); 
+		console.log(element)
+
+		// Remove item form idlist
+		delete IdList[id]
+		//console.log(IdList)
+		SaveData();
+	}
+
+	function CheckData() {
+		if (typeof(Storage) !== "undefined") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function SaveData() {
+		Storage.clear();
+		if (CheckData()) {
+			const SaveArray = new Array();
+			for (let key in IdList) {
+				SaveArray.push(IdList[key]["details"])
+			}
+
+			Storage.setItem("cards", JSON.stringify(SaveArray));
+			Storage.setItem("theme", JSON.stringify(DarkMode));
+			console.log(JSON.stringify(SaveArray));
+			
+		}
+	}
+
+	function LoadData() {
+		//Storage.clear();
+		if (CheckData()) {
+			const Arr = JSON.parse(Storage.getItem("cards"));
+			ToggleTheme(!JSON.parse(Storage.getItem("theme")));
+			if (Arr != null) {
+				Arr.forEach(function(item, index, array) {
+					AddCard(item["url"], item["name"]);
+				})
+			}
+			
+		} else {
+			return null;
+		}
+	}
+
+	function OpenLink(url) {
+		window.open(url);
+	}
+
+
+</script>
+
+<!-- Cards -->
+<section id="grid" class="basic-grid">
+	
+
+</section>
+
+</body>
+</html>

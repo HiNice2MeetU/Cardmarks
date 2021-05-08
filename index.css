@@ -1,0 +1,232 @@
+/* Theming */
+
+:root {
+  /* Mode dependant values */
+  --MAIN_D: #0d0f10;
+  --MAIN_L: #b0b0b0;
+  --MAIN_LIGHT_D: #3d3d3d;
+  --MAIN_LIGHT_L: #e1e1e1;
+
+  /* Constant values */
+  --ALT: #017f7f;
+  --ALT_LIGHT: #01adad;
+  --CORRECT: #128700;
+  --CORRECT_LIGHT: #36a026;
+  --INCORRECT: #b72123;
+  --INCORRECT_ALT: #ef2b2e;
+}
+
+.light {
+  --MAIN: var(--MAIN_L);
+  --MAIN_LIGHT: var(--MAIN_LIGHT_L);
+  --TEXT: black;
+}
+
+.dark {
+  --MAIN: var(--MAIN_D);
+  --MAIN_LIGHT: var(--MAIN_LIGHT_D);
+  --TEXT: white;
+}
+
+/* Body */
+body {
+	background-color: var(--MAIN);
+	font-family: Verdana, sans-serif;
+}
+
+a {
+  color: var(--ALT_LIGHT);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.grid {
+	display: grid;
+}
+
+/* CSS Cards (Also why do html,css and js have different comments?) */
+.card {
+  box-shadow: 0 4px 8px 0 var(--MAIN_LIGHT);
+  width: 100%;
+  height: 100%;
+  transition: 0.3s;
+  background-color: var(--MAIN_LIGHT);
+  color: var(--TEXT);
+}
+
+div.hiddenlink {
+	cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 var(--MAIN_LIGHT);
+  width: 102%;
+  height: 102%;
+}
+
+.container {
+  padding: 2px 16px;
+}
+
+.linkrl {
+	word-wrap: break-word
+}
+
+/* Responsive iframe */
+
+.preview {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 100%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+}
+
+.responsive-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Css grid layout */
+.basic-grid {
+	display: grid;
+	gap: 2rem;
+	padding-top: 1rem;
+
+	grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+}
+
+/* The Navigation menu */
+ul.nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--MAIN_LIGHT);
+}
+
+li.nav {
+  float: left;
+}
+
+.nav_element {
+  display: block;
+  color: var(--TEXT);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.nav_element:hover:not(.active) {
+  background-color: var(--ALT);
+}
+
+.active {
+  background-color: var(--ALT_LIGHT);
+}
+
+button.flat {
+	border: none;
+	background-color: inherit;
+	font-size: 16px;
+	color: var(--TEXT);
+	cursor: pointer;
+}
+
+button.remove {
+	border: none;
+	background-color: var(--INCORRECT);
+	font-size: 20px;
+	color: var(--TEXT);
+	cursor: pointer;
+	width: 100%;
+	padding: 5px;
+}
+
+button.remove:hover {
+	background-color: var(--INCORRECT_ALT);
+}
+
+/* Modal box */
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: var(--MAIN_LIGHT); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: var(--MAIN_LIGHT);
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  color: var(--TEXT);
+}
+
+/* The Close Button */
+.close {
+  color: var(--ALT);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--ALT_LIGHT);
+  text-decoration: none;
+  cursor: pointer;
+} 
+
+/* Form styling */
+input[type=text], input[type=url]{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid #555;
+  outline: none;
+  color: var(--TEXT);
+  background-color: var(--ALT);
+}
+
+input[type=text]:focus, input[type=url]:focus {
+  background-color: var(--ALT_LIGHT);
+}
+
+input[type=submit] {
+	background-color: var(--CORRECT);
+	outline: none;
+	padding: 12px 12px;
+	color: var(--TEXT);
+	border: 0;
+}
+
+input[type=submit]:hover {
+	background-color: var(--CORRECT_LIGHT);
+}
+
+/* Misc */
+.warning {
+	padding: 10px;
+  background-color: #dd8118;
+  color: var(--TEXT);
+  opacity: 1;
+  transition: opacity 0.6s;
+  margin-bottom: 15px;
+  border-left: 6px solid #ffeb3b;
+}
