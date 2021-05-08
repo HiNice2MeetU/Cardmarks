@@ -1,8 +1,10 @@
 ## Cardmarks
 
-Bookmarks but better!
+**Bookmarks but better!**
 
-Find more on my itch page: <https://hinice2meetu.itch.io/cardmark>
+Visit Cardmarks!: (https://hinice2meetu.github.io/Cardmarks/)
+Find more on my itch page: (https://hinice2meetu.itch.io/cardmark)
+
 Made for the itch.io The Tool Jam, completed on 8/5/21
 
 ### Bookmarks are boring
